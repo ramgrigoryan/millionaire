@@ -2,7 +2,8 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 export const AppContainer = styled.div`
-    height:908px;
+    height:100vh;
+    width:100vw;
     display:flex;
     align-items:flex-end;
     justify-content:center;

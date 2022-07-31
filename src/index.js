@@ -16,7 +16,16 @@ root.render(
     <Provider store={store}>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/game" element={<Game />}></Route>
+        <Route path=":questionId" element={<Game />}>
+          <Route
+            path="*"
+            element={
+              <div>
+                <h2>No such path exist</h2>
+              </div>
+            }
+          />
+        </Route>
       </Routes>
     </Provider>
   </BrowserRouter>
