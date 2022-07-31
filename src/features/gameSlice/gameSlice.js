@@ -31,11 +31,13 @@ const gameSlice = createSlice({
       );
     },
     fiftyFifty: (state) => {
-      state.currentQuestion.content = filterForFiftyFifty(
-        state.currentQuestion.content,
-        state.currentQuestion.correct
-      );
-      state.helpers.availableFiftyFifty = false;
+      if (state.helpers.availableFiftyFifty) {
+        state.currentQuestion.content = filterForFiftyFifty(
+          state.currentQuestion.content,
+          state.currentQuestion.correct
+        );
+        state.helpers.availableFiftyFifty = false;
+      }
     },
     audience: (state) => (state.helpers.availableAudience = false),
     callAFriend: (state) => (state.helpers.availableCall = false),
