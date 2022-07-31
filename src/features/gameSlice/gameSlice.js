@@ -26,7 +26,9 @@ const gameSlice = createSlice({
   },
   reducers: {
     addCurrentQuestion: (state, action) => {
-      state.currentQuestion = state.questions.find((question,index)=>index===action.payload);
+      state.currentQuestion = state.questions.find(
+        (question, index) => index === action.payload
+      );
     },
     fiftyFifty: (state) => {
       state.currentQuestion.content = filterForFiftyFifty(
@@ -35,6 +37,8 @@ const gameSlice = createSlice({
       );
       state.helpers.availableFiftyFifty = false;
     },
+    audience: (state) => (state.helpers.availableAudience = false),
+    callAFriend: (state) => (state.helpers.availableCall = false),
   },
   extraReducers: (builder) => {
     builder.addCase(fetchQuestions.pending, (state) => {
@@ -50,5 +54,6 @@ const gameSlice = createSlice({
     });
   },
 });
-export const { addCurrentQuestion,fiftyFifty } = gameSlice.actions;
+export const { addCurrentQuestion, fiftyFifty, audience, callAFriend } =
+  gameSlice.actions;
 export default gameSlice.reducer;
