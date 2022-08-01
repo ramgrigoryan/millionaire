@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import filterForFiftyFifty from "../../utils/helpers/fiftyFifty";
 
 export const fetchQuestions = createAsyncThunk(
   "questions\fetchQuestions",
@@ -10,6 +9,23 @@ export const fetchQuestions = createAsyncThunk(
     return questionsArray;
   }
 );
+
+function blurFiftyFifty(question) {
+  const { content, correct } = question;
+  const wrongIndexes = content
+    .map((question, index) => {
+      if (index === correct) {
+        return -1;
+      }
+      return index;
+    })
+    .filter((index) => index > -1);
+  const rand = Math.floor(3 * Math.random());
+  const leftQuestion = wrongIndexes.find((question, index) => {
+    return index === rand;
+  });
+  return [leftQuestion, correct];
+}
 
 const gameSlice = createSlice({
   name: "questions",
@@ -29,15 +45,11 @@ const gameSlice = createSlice({
       state.currentQuestion = state.questions.find(
         (question, index) => index === action.payload
       );
+      state.currentQuestion.leftIndexes = [0, 1, 2, 3];
     },
-    fiftyFifty: (state) => {
-      if (state.helpers.availableFiftyFifty) {
-        state.currentQuestion.content = filterForFiftyFifty(
-          state.currentQuestion.content,
-          state.currentQuestion.correct
-        );
-        state.helpers.availableFiftyFifty = false;
-      }
+    fiftyFifty: (state, action) => {
+      state.currentQuestion.leftIndexes = blurFiftyFifty(state.currentQuestion);
+      state.helpers.availableFiftyFifty = false;
     },
     audience: (state) => (state.helpers.availableAudience = false),
     callAFriend: (state) => (state.helpers.availableCall = false),
