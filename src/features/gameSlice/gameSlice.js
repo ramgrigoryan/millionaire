@@ -24,7 +24,7 @@ function blurFiftyFifty(question) {
   const leftQuestion = wrongIndexes.find((question, index) => {
     return index === rand;
   });
-  return [leftQuestion, correct];
+  return [leftQuestion, correct].sort((a, b) => (a > b ? 1 : -1));
 }
 
 const gameSlice = createSlice({
@@ -36,8 +36,8 @@ const gameSlice = createSlice({
     currentQuestion: null,
     helpers: {
       availableFiftyFifty: true,
-      availableAudience: true,
-      availableCall: true,
+      availableAudience: { status: true },
+      availableCall:{status:true},
     },
   },
   reducers: {
@@ -51,8 +51,17 @@ const gameSlice = createSlice({
       state.currentQuestion.leftIndexes = blurFiftyFifty(state.currentQuestion);
       state.helpers.availableFiftyFifty = false;
     },
-    audience: (state) => (state.helpers.availableAudience = false),
-    callAFriend: (state) => (state.helpers.availableCall = false),
+    audience: (state, action) => {
+      if (state.helpers.availableAudience.status) {
+        state.helpers.availableAudience.status = action.payload.status;
+        state.helpers.availableAudience.votes = action.payload.votes;
+      }
+    },
+    callAFriend: (state,action) => {
+      if (state.helpers.availableCall.status) {
+        state.helpers.availableCall= action.payload
+      }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchQuestions.pending, (state) => {
