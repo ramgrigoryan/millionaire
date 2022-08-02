@@ -5,12 +5,12 @@ import { fetchQuestions } from "./features/gameSlice/gameSlice";
 import randomQuestionHelper from "./utils/helpers/randomNum";
 import { addCurrentQuestion } from "./features/gameSlice/gameSlice";
 const App = () => {
-  const status = useSelector((state) => state.game.status);
-  const randomQuestion = randomQuestionHelper();
+  const {status,questions} = useSelector((state) => state.game);
   const dispatch = useDispatch();
   useEffect(() => {
     status === "idle" && dispatch(fetchQuestions());
   });
+  const randomQuestion = randomQuestionHelper(questions.length)
   return (
     <AppContainer className="App">
       <LinkStyled to={randomQuestion.toString()}>

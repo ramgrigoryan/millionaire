@@ -4,13 +4,19 @@ import {
   SingleQuestion,
   GameQuestionsWrapper,
 } from "./questions-container.style";
-import { useSelector } from "react-redux/es/exports";
+import { useDispatch, useSelector } from "react-redux/es/exports";
 import { numToLet } from "../../utils/helpers/indexToLetter";
+import { addCurrentQuestion, refreshQuestions, updateCount } from "../../features/gameSlice/gameSlice";
+import { useNavigate } from "react-router-dom";
+import randomNum from "../../utils/helpers/randomNum";
 
 const QuestionContainer = () => {
-  const collection = useSelector((state) => state.game.currentQuestion);
-  const leftIndexes = collection.leftIndexes;
-  const { question, content } = collection;
+  const {currentQuestion,questions} = useSelector((state) => state.game);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const nextQuestion = randomNum(questions.length-1);
+  const leftIndexes = currentQuestion.leftIndexes;
+  const { question, content, correct } = currentQuestion;
   return (
     <QuestionsWrapper>
       <QuestionArea>
@@ -20,7 +26,17 @@ const QuestionContainer = () => {
         {content.map((q, i) => {
           if (leftIndexes.includes(i)) {
             return (
-              <SingleQuestion onClick={() => {}} key={Math.random()}>
+              <SingleQuestion onClick={() => {
+                if(i===correct){
+                  dispatch(refreshQuestions(currentQuestion.id));
+                  dispatch(addCurrentQuestion(nextQuestion));
+                  dispatch(updateCount());
+                  navigate(`/${nextQuestion}`);
+                }
+                else{
+                  dispatch(updateCount("lose"));
+                }
+              }} key={Math.random()}>
                 <p>{`${numToLet(i)} ${q}`}</p>
               </SingleQuestion>
             );

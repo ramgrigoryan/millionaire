@@ -1,2 +1,2 @@
-const upTo14 =  () =>Math.floor(15*Math.random());
-export default upTo14;
+const randomNum =  (number) =>Math.floor(number*Math.random());
+export default randomNum;

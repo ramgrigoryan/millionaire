@@ -27,19 +27,22 @@ function blurFiftyFifty(question) {
   return [leftQuestion, correct].sort((a, b) => (a > b ? 1 : -1));
 }
 
+const initialState = {
+  questions: [],
+  status: "idle",
+  error: null,
+  currentQuestion: null,
+  helpers: {
+    availableFiftyFifty: true,
+    availableAudience: { status: true },
+    availableCall: { status: true },
+  },
+  prizeCount: { rightAnswersCount: 0, status: "pending" },
+};
+
 const gameSlice = createSlice({
   name: "questions",
-  initialState: {
-    questions: [],
-    status: "idle",
-    error: null,
-    currentQuestion: null,
-    helpers: {
-      availableFiftyFifty: true,
-      availableAudience: { status: true },
-      availableCall:{status:true},
-    },
-  },
+  initialState,
   reducers: {
     addCurrentQuestion: (state, action) => {
       state.currentQuestion = state.questions.find(
@@ -57,11 +60,24 @@ const gameSlice = createSlice({
         state.helpers.availableAudience.votes = action.payload.votes;
       }
     },
-    callAFriend: (state,action) => {
+    callAFriend: (state, action) => {
       if (state.helpers.availableCall.status) {
-        state.helpers.availableCall= action.payload
+        state.helpers.availableCall = action.payload;
       }
     },
+    refreshQuestions: (state, action) => {
+      state.questions = state.questions.filter(
+        (question) => question.id !== action.payload
+      );
+    },
+    updateCount: (state, action) => {
+      if (action.payload === "withdraw" || action.payload === "lose") {
+        state.prizeCount.status = action.payload;
+      } else {
+        state.prizeCount.rightAnswersCount++;
+      }   
+    },
+    resetGame: (state) => (state = initialState),
   },
   extraReducers: (builder) => {
     builder.addCase(fetchQuestions.pending, (state) => {
@@ -77,6 +93,13 @@ const gameSlice = createSlice({
     });
   },
 });
-export const { addCurrentQuestion, fiftyFifty, audience, callAFriend } =
-  gameSlice.actions;
+export const {
+  addCurrentQuestion,
+  fiftyFifty,
+  audience,
+  callAFriend,
+  refreshQuestions,
+  updateCount,
+  resetGame,
+} = gameSlice.actions;
 export default gameSlice.reducer;

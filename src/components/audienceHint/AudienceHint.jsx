@@ -5,7 +5,6 @@ const AudienceHint = ({ votes }) => {
   const leftIndexes = useSelector(
     (state) => state.game.currentQuestion.leftIndexes
   );
-  console.log(votes)
   return (
     <AudienceContainer>
       {leftIndexes.map((candidate,index) => {
