@@ -6,7 +6,8 @@ export const fetchQuestions = createAsyncThunk(
     const questionsArray = await (
       await fetch("http://localhost:3000/questions")
     ).json();
-    return questionsArray;
+    const gameCollectionId = Math.floor(5 * Math.random());
+    return questionsArray[gameCollectionId];
   }
 );
 
@@ -38,6 +39,10 @@ const initialState = {
     availableCall: { status: true },
   },
   prizeCount: { rightAnswersCount: 0, status: "pending" },
+  showStatuses: {
+    callStatus: false,
+    audienceStatus: false,
+  },
 };
 
 const gameSlice = createSlice({
@@ -75,9 +80,12 @@ const gameSlice = createSlice({
         state.prizeCount.status = action.payload;
       } else {
         state.prizeCount.rightAnswersCount++;
-      }   
+      }
     },
     resetGame: (state) => (state = initialState),
+    changeShowStatuses: (state, action) => {
+      state.showStatuses = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchQuestions.pending, (state) => {
@@ -101,5 +109,6 @@ export const {
   refreshQuestions,
   updateCount,
   resetGame,
+  changeShowStatuses
 } = gameSlice.actions;
 export default gameSlice.reducer;

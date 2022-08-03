@@ -1,2 +1,4 @@
-const randomNum =  (number) =>Math.floor(number*Math.random());
+const randomNum =  (number,questions) =>{
+    return Math.floor(number*Math.random());
+}
 export default randomNum;
